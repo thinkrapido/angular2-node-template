@@ -1,14 +1,15 @@
 (function (global) {
   var map = {
       'app': '',
-      'rxjs': 'libs/',
-      //'angular2-in-memory-web-api': 'libs/',
-      '@angular': 'libs/'
+      'rxjs': 'libs',
+      'ng2-translate': 'libs',
+      '@angular': 'libs'
     };
     var packages = {
       'app': { main: 'app.js', defaultExtension: 'js' },
       'rxjs': { defaultExtension: 'js' },
       'angular2-in-memory-web-api': { defaultExtension: 'js' },
+      'ng2-translate': { defaultExtension: 'js' }
     };
     var packageNames = [
       '@angular/common',

@@ -74,7 +74,7 @@ gulp.task('dev:sass-vendor', () => {
     .pipe(plugins.sass().on('error', plugins.sass.logError))
     .pipe(gulp.dest(config.targets.buildFolder))
     ;
-})
+});
 
 gulp.task('dev:sass-app', () => {
   gulp.src([
@@ -84,7 +84,21 @@ gulp.task('dev:sass-app', () => {
     .pipe(plugins.sass({ importer: compass }).on('error', plugins.sass.logError))
     .pipe(gulp.dest(config.targets.buildFolder))
     ;
-})
+});
+
+gulp.task('dev:de-localization', () => {
+  gulp.src(path.join(config.source.folder, '**/*.de-de.json'))
+    .pipe(plugins.mergeJson('de.json'))
+    .pipe(gulp.dest(config.targets.buildFolder))
+    ;
+});
+
+gulp.task('dev:en-localization', () => {
+  gulp.src(path.join(config.source.folder, '**/*.en-us.json'))
+    .pipe(plugins.mergeJson('en.json'))
+    .pipe(gulp.dest(config.targets.buildFolder))
+    ;
+});
 
 gulp.task('dev:copy-systemjs-config', () => {
   gulp.src(config.source.systemjsConfig)
@@ -100,7 +114,7 @@ gulp.task('dev:start-libs-server', () => {
       NODE_ENV: 'development',
     },
   }, (err) => { if (err) console.log(err); });
-})
+});
 
 gulp.task('dev:start-live-server', () => {
   function start() {
@@ -133,9 +147,11 @@ gulp.task('dev:default', function(done) {
     'dev:sass-app',
     'dev:js-vendor',
     'dev:js-app',
+    'dev:de-localization',
+    'dev:en-localization',
     done
   );
-})
+});
 
 gulp.task('dev:watch', () => {
   plugins.runSequence(
@@ -148,7 +164,9 @@ gulp.task('dev:watch', () => {
             'dev:copy-html',
             'dev:copy-systemjs-config',
             'dev:sass-app',
-            'dev:js-app'
+            'dev:js-app',
+            'dev:de-localization',
+            'dev:en-localization'
           );
         })
         .pipe(gulp.dest(config.targets.buildFolder))

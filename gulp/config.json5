@@ -12,6 +12,7 @@
         'reflect-metadata',
         'rxjs',
         'zone.js/dist',
+        'ng2-translate',
 
         '@angular',
       ],
