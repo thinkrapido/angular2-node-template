@@ -1,0 +1,24 @@
+{
+  source: {
+    folder: '${project.root}/src',
+    systemjsConfig: '${project.root}/src/systemjs.config.js',
+    html: '${project.root}/src/**/*.html',
+    sass: '**/*.scss',
+
+    vendor: {
+      libs: [
+        'systemjs/dist',
+        'es6-shim',
+        'reflect-metadata',
+        'rxjs',
+        'zone.js/dist',
+
+        '@angular',
+      ],
+    },
+  },
+
+  targets: {
+    buildFolder: '${project.root}/build',
+  },
+}
