@@ -16,7 +16,7 @@ const gulp = require('gulp'),
 
       config = utils.loadConfig('./config', {
         project: {
-          root: process.cwd(),
+          root: process.cwd().replace(/\\/g, '/'),
         },
       })
       ;
@@ -55,7 +55,6 @@ gulp.task('dev:js-app', () => {
       noImplicitAny: true,
     }))
     .pipe(gulp.dest(config.targets.buildFolder))
-//    .pipe(gulp.dest(`${config.targets.buildFolder}/app`))
     ;
 });
 
@@ -80,7 +79,6 @@ gulp.task('dev:sass-app', () => {
   gulp.src([
       path.join(config.source.folder, config.source.sass),
     ])
-    //.pipe(plugins.concat('app.css'))
     .pipe(plugins.sass({ importer: compass }).on('error', plugins.sass.logError))
     .pipe(gulp.dest(config.targets.buildFolder))
     ;
