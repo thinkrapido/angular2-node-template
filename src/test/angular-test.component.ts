@@ -1,11 +1,13 @@
 
 import { Component, Inject } from '@angular/core';
-import { ROUTER_DIRECTIVES, Routes, Router } from '@angular/router';
+import { ROUTER_DIRECTIVES, Routes } from '@angular/router';
 
-import { TranslateService, TranslatePipe } from 'ng2-translate/ng2-translate';
+import { TranslatePipe } from 'ng2-translate/ng2-translate';
 
 import { LangSelector } from './lang-selector.component';
 import { AboutComponent } from './about.component';
+
+import { LocalizationService } from '../services/router/localization.service';
 
 @Component({
   selector: 'app',
@@ -21,16 +23,8 @@ export class AngularTestApp {
   public title: string = 'angular-test works!';
 
   constructor(
-      @Inject(Router) private router: Router,
-      @Inject(TranslateService) translate: TranslateService
+    @Inject(LocalizationService) private _localizationService: LocalizationService
   ) {
-    var userLang: string = navigator.language.split('-')[0]; // use navigator lang if available
-    userLang = /(de|en)/gi.test(userLang) ? userLang : 'en';
-
-    translate.setDefaultLang('en');
-
-    translate.use(userLang);
-
-//    this.router.navigate([`/${userLang}`]);
+    this._localizationService.init('/about');
   }
 }

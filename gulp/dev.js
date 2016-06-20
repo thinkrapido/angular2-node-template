@@ -66,8 +66,9 @@ gulp.task('dev:systemjs', () => {
 
 gulp.task('dev:sass-vendor', () => {
   gulp.src([
-      path.join(process.cwd(), 'bower_components/foundation-sites/dist/foundation.css'),
-      '!' + path.join(process.cwd(), 'bower_components/foundation-sites/dist/*.min.css'),
+      //path.join(process.cwd(), 'bower_components/foundation-sites/dist/foundation.css'),
+      //'!' +
+      path.join(process.cwd(), 'bower_components/foundation-sites/dist/*.min.css'),
     ])
     .pipe(plugins.concat('vendor.css'))
     .pipe(plugins.sass().on('error', plugins.sass.logError))

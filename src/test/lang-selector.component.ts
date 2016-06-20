@@ -1,8 +1,7 @@
 
 import { Component, Inject } from '@angular/core';
-import { Router, RouteSegment } from '@angular/router';
 
-import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LocalizationService } from '../services/router/localization.service';
 
 @Component({
   selector: 'lang-selector',
@@ -14,15 +13,11 @@ export class LangSelector {
   public langs: string[] = ['en', 'de'];
 
   constructor(
-    @Inject(Router) private router: Router,
-    @Inject(RouteSegment) private segment: RouteSegment,
-    @Inject(TranslateService) private translate: TranslateService
+    @Inject(LocalizationService) private _localizationService: LocalizationService
   ) {
   }
 
   setLang(lang: string): void {
-    this.translate.use(lang);
-    console.log(this.segment);
-//    this.router.navigate([`/${lang}/about`]);
+    this._localizationService.changeLanguage(lang);
   }
 }
