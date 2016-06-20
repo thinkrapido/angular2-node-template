@@ -115,6 +115,7 @@ gulp.task('dev:start-live-server', () => {
           port: PORT,
           livereload: true,
           open: true,
+          fallback: 'index.html',
           proxies: [{
             source: '/libs',
             target: `http://localhost:${PORT + 1}/`,
@@ -122,29 +123,6 @@ gulp.task('dev:start-live-server', () => {
             source: '/api',
             target: `http://localhost:${PORT + 2}/`,
           },],
-          middleware: (req, res, next) => {
-            const patterns = [
-              /livereload/,
-              /\.html$/,
-              /\.json$/,
-              /\.js$/,
-              /\.css$/,
-              /\.ico$/,
-              /^\/libs/,
-            ];
-            const test = (url) => {
-              let out = false;
-              for (let pattern of patterns) {
-                out = out || pattern.test(url);
-                if (out) break;
-              }
-              return out;
-            }
-            if (test(req.originalUrl)) {
-              return next();
-            }
-            res.end(fs.readFileSync(path.join(config.targets.buildFolder, '/index.html')));
-          }
         }))
         ;
     }
