@@ -1,0 +1,16 @@
+
+@import 'compass';
+
+div {
+    display: inline-block;
+    background: green;
+    color: white;
+    font-weight: bold;
+    padding: .5em 1em;
+    margin: .3em;
+    cursor: pointer;
+    @include border-radius(5px);
+    &:hover {
+        background-color: blue;
+    }
+}

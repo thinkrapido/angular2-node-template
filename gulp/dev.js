@@ -1,12 +1,12 @@
 
 'use strict';
 
+const PORT = process.env.PORT || 3000,
+      NODE_ENV = process.env.NODE_ENV || 'dev'
+      ;
+
 const gulp = require('gulp'),
-      plugins = require('gulp-load-plugins')({
-        rename: {
-          'gulp-server-livereload': 'server',
-        },
-      }),
+      plugins = require('gulp-load-plugins')(),
       fs = require('fs'),
       path = require('path'),
       utils = require('./utils'),
@@ -106,16 +106,6 @@ gulp.task('dev:copy-systemjs-config', () => {
     ;
 });
 
-gulp.task('dev:start-libs-server', () => {
-  plugins.developServer.listen({
-    path: 'srv/libs.js',
-    env: {
-      PORT: 3001,
-      NODE_ENV: 'development',
-    },
-  }, (err) => { if (err) console.log(err); });
-});
-
 gulp.task('dev:start-live-server', () => {
   function start() {
     if (!fs.existsSync(config.targets.buildFolder)) {
@@ -124,18 +114,68 @@ gulp.task('dev:start-live-server', () => {
     else {
       gulp.src('./build')
         .pipe(plugins.webserver({
-          port: 3000,
+          port: PORT,
           livereload: true,
           open: true,
           proxies: [{
             source: '/libs',
-            target: 'http://localhost:3001/',
-          }],
+            target: `http://localhost:${PORT + 1}/`,
+          },{
+            source: '/api',
+            target: `http://localhost:${PORT + 2}/`,
+          },],
+          middleware: (req, res, next) => {
+            const patterns = [
+              /livereload/,
+              /\.html$/,
+              /\.json$/,
+              /\.js$/,
+              /\.css$/,
+              /\.ico$/,
+              /^\/libs/,
+            ];
+            const test = (url) => {
+              let out = false;
+              for (let pattern of patterns) {
+                out = out || pattern.test(url);
+                if (out) break;
+              }
+              return out;
+            }
+            if (test(req.originalUrl)) {
+              return next();
+            }
+            res.end(fs.readFileSync(path.join(config.targets.buildFolder, '/index.html')));
+          }
         }))
         ;
     }
   }
   start();
+});
+
+gulp.task('dev:start-libs-server', () => {
+  plugins.developServer.listen({
+    path: 'srv/libs.js',
+    env: {
+      PORT: PORT + 1,
+      NODE_ENV: 'development',
+    },
+  }, (err) => { if (err) console.log(err); });
+});
+
+gulp.task('dev:start-api-server', () => {
+  plugins.nodemon({
+    script: 'srv/api.js',
+    ext: 'js',
+    env: {
+      PORT: PORT + 2,
+      NODE_ENV: 'development',
+    },
+  }).on('restart', () => {
+    console.log('restarted');
+    fs.writeFile(`${config.targets.buildFolder}/_`, Math.random());
+  });
 });
 
 gulp.task('dev:default', function(done) {
@@ -156,6 +196,7 @@ gulp.task('dev:default', function(done) {
 gulp.task('dev:watch', () => {
   plugins.runSequence(
     'dev:default',
+    'dev:start-api-server',
     'dev:start-libs-server',
     'dev:start-live-server',
     () => {
